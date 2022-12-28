@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@100;300;400;500;700;800;900&display=swap");
+/*@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@100;300;400;500;700;800;900&display=swap");*/
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans&display=swap');
 
 .app {
     width: 100vw;
@@ -31,6 +32,18 @@
 
     padding-bottom: 20px;
     scroll-behavior: smooth;
+}
+
+@media (min-width: 1440px) {
+    .chat_container {
+        width: 89%;
+    }
+}
+
+@media (min-width: 2560px) {
+    .chat_container {
+        width: 50%;
+    }
 }
 
 /* hides scrollbar */
@@ -86,7 +99,8 @@
     flex: 1;
 
     color: #dcdcdc;
-    font-size: 20px;
+    font-size: 1rem;
+    line-height: 20px;
 
     max-width: 100%;
     overflow-x: scroll;
