@@ -72,7 +72,7 @@ export const handleSubmit = async (event: any) => {
     loader(messageDiv);
 
     // API integration
-    const response = await fetch(process.env.SERVER_URL!, {
+    const response = await fetch(`${process.env.SERVER_URL!}/api/gpt-ai`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ export const handleSubmit = async (event: any) => {
     if (response.ok) {
         // Response valid
         const data = await response.json();
-        const parsedData = data.bot.trim() // trims any trailing spaces/'\n'
+        const parsedData = data.gptAI.trim() // trims any trailing spaces/'\n'
         typeText(messageDiv, parsedData);
     } else {
         // Otherwise, error occurred

@@ -31,7 +31,7 @@ export default function Home() {
                 <div className="chat_container"></div>
                 <div className="input_container">
                     <form className="form" onSubmit={handleSubmit}>
-                        <textarea name="prompt" cols={1} rows={1} placeholder="Ask Codex..."></textarea>
+                        <textarea name="prompt" cols={1} rows={1} placeholder="Ask AI..."></textarea>
                         <button type="submit"><Image src={sendSVG} alt="send" width={500} height={500}/>
                         </button>
                     </form>
