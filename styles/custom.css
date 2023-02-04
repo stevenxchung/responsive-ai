@@ -34,17 +34,17 @@
     scroll-behavior: smooth;
 }
 
-@media (min-width: 1440px) {
-    .chat_container {
-        width: 89%;
-    }
-}
+/*@media (min-width: 1440px) {*/
+/*    .chat_container {*/
+/*        width: 89%;*/
+/*    }*/
+/*}*/
 
-@media (min-width: 2560px) {
-    .chat_container {
-        width: 50%;
-    }
-}
+/*@media (min-width: 2560px) {*/
+/*    .chat_container {*/
+/*        width: 50%;*/
+/*    }*/
+/*}*/
 
 /* hides scrollbar */
 .chat_container::-webkit-scrollbar {
@@ -53,7 +53,7 @@
 
 .wrapper {
     width: 100%;
-    padding: 15px;
+    padding: 1rem;
 }
 
 .ai {

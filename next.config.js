@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
-const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL
+const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
 const nextConfig = {
   reactStrictMode: true,
   // Reference: https://frontend-digest.com/environment-variables-in-next-js-9a272f0bf655
   env: {
-    SERVER_URL: baseUrl || 'http://localhost:3000/',
+    SERVER_URL: baseUrl,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
   async rewrites() {
