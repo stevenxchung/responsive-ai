@@ -94,6 +94,6 @@ export const handleSubmit = async (event: any) => {
         // Otherwise, error occurred
         const err = await response.text();
         messageDiv.innerHTML = 'Something went wrong!';
-        alert(err);
+        // alert(err);
     }
 }
