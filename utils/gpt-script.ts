@@ -1,7 +1,9 @@
+import {ChatCompletionRequestMessage, ChatCompletionRequestMessageRoleEnum} from 'openai/api';
+
 let loadInterval: NodeJS.Timer;
+const AI_SYSTEM_KEYWORD = 'you are'
 
 export function loader(e: Element) {
-
     e.textContent = '';
     loadInterval = setInterval(() => {
         e.textContent += '.'
@@ -60,7 +62,8 @@ export const handleSubmit = async (event: any) => {
 
     // User
     const data = new FormData(form);
-    chatContainer!.innerHTML += chatStripe(false, data.get('prompt')!.toString());
+    const content = data.get('prompt')!.toString();
+    chatContainer!.innerHTML += chatStripe(false, content);
     form.reset();
 
     // AI
@@ -71,6 +74,11 @@ export const handleSubmit = async (event: any) => {
     const messageDiv = document.getElementById(uniqueId)!;
     loader(messageDiv);
 
+    let chatGPTRequestMessage: ChatCompletionRequestMessage = {
+        role: content.toLowerCase().includes(AI_SYSTEM_KEYWORD) ? ChatCompletionRequestMessageRoleEnum.System : ChatCompletionRequestMessageRoleEnum.User,
+        content
+    };
+
     // API integration
     const response = await fetch(`${process.env.SERVER_URL!}/api/gpt-ai`, {
         method: 'POST',
@@ -78,7 +86,7 @@ export const handleSubmit = async (event: any) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            prompt: data.get('prompt')
+            chatGPTRequestMessage
         })
     });
 
