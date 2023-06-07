@@ -7,10 +7,17 @@ Responsive Next.js app that leverages [Open AI GPT](https://github.com/openai/gp
 ### Prerequisites
 
 1. You must have an `OPENAI_API_KEY` provided by https://openai.com/api/
-2. Create a `.env` file in the `/server` folder with `OPENAI_API_KEY=<YOUR KEY>`
-3. Install packages with `npm i` in both `/client` and `/server` folders
+2. Create `.env.local` in the root project directory with variables from `.env.example`
+3. Replace `<YOUR API KEY>` with your API key
+4. Install packages with `npm i`
 
 ### Run application
 
-1. Open two terminals, one for `/client` and one for `/server`
-2. `npm run dev` in both directories (client will automatically open a new window)
+1. In the `next.config.js` file, ensure the following is true:
+
+```javascript
+const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+// const baseUrl = 'http://localhost:3000';
+```
+
+2. Run `npm run dev` (client will automatically open a new window)
