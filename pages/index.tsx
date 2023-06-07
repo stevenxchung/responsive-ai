@@ -33,7 +33,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, closeModal }) => {
     <ReactModal
       isOpen={isOpen}
       onRequestClose={closeModal}
-      style={modalStyles}
+      style={modalStyles as ReactModal.Styles}
       shouldCloseOnOverlayClick={false}
     >
       <h2>Note</h2>
