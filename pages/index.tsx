@@ -41,12 +41,12 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, closeModal }) => {
         I initially created this integration so people would not have to
         register directly on OpenAI. However, since my token recently expired,
         users will not be able to submit queries as I have not decided to renew
-        their API plan as of writing. Please refer to the
+        the OpenAI API plan as of writing. Please refer to the
         <Link href="https://github.com/stevenxchung/responsive-ai">
           &nbsp;responsive-ai&nbsp;
         </Link>
-        repository for more information on how to run the app locally if you
-        have an OpenAI API key.
+        repository README for more information on how to run the app locally if
+        you have an OpenAI API key.
       </p>
       <div
         style={{
