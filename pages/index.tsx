@@ -38,15 +38,15 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, closeModal }) => {
     >
       <h2>Note</h2>
       <p>
-        I initially created this integration so people would not have to
-        register directly on OpenAI. However, since my token recently expired,
-        users will not be able to submit queries as I have not decided to renew
-        the OpenAI API plan as of writing. Please refer to the
+        I initially created this integration so folks would not have to register
+        directly on OpenAI. However, since my token recently expired, users will
+        not be able to submit queries as I have not decided to renew the OpenAI
+        API plan as of writing. Please refer to the&nbsp;
         <Link href="https://github.com/stevenxchung/responsive-ai">
-          &nbsp;responsive-ai&nbsp;
+          responsive-ai
         </Link>
-        repository README for more information on how to run the app locally if
-        you have an OpenAI API key.
+        &nbsp;repository README for more information on how to run the app
+        locally if you have an OpenAI API key.
       </p>
       <div
         style={{
