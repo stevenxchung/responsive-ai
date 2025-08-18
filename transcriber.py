@@ -1,62 +1,19 @@
 import sys
 import time
 import queue
-import logging
 import signal
 import torch
 import numpy as np
 import sounddevice as sd
 
-from dataclasses import dataclass
 from threading import Thread
 from datetime import datetime
 from typing import List
-
 from faster_whisper import WhisperModel
 
-# -------------------------
-# Logging Configuration
-# -------------------------
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%H:%M:%S",
-)
-logger = logging.getLogger("transcriber")
-logging.getLogger("faster_whisper").setLevel(logging.WARNING)
-
-
-# -------------------------
-# Utility Functions
-# -------------------------
-def get_device_index(name: str, for_input: bool = True) -> int:
-    """Finds the input/output audio device index by name."""
-    for idx, dev in enumerate(sd.query_devices()):
-        if name.lower() in dev["name"].lower():
-            if for_input and dev["max_input_channels"] > 0:
-                return idx
-            if not for_input and dev["max_output_channels"] > 0:
-                return idx
-    raise ValueError(
-        f"No {'input' if for_input else 'output'} device found for '{name}'"
-    )
-
-
-# -------------------------
-# Configuration Data Class
-# -------------------------
-@dataclass
-class TranscriberConfig:
-    device_name: str = "CABLE Output"
-    partial_interval: float = 1.5
-    sample_rate: int = 16_000
-    model_size: str = "small"
-    compute_type: str = "float16"
-    vad_threshold: float = 0.5
-    transcript_file: str = "transcript.log"
-    block_size: int = 512
-    min_silence_duration_ms: int = 1000  # Pause before final commit
-    partial_word_context: int = 8  # Words to show in partial output
+from config import TranscriberConfig
+from utils.logger import logger
+from utils.audio import get_device_index, normalize
 
 
 # -------------------------
@@ -117,14 +74,9 @@ class LiveTranscriber:
     # -------------------------
     # Processing Utilities
     # -------------------------
-    @staticmethod
-    def normalise(audio: np.ndarray) -> np.ndarray:
-        peak = np.max(np.abs(audio))
-        return audio / peak * 0.9 if peak > 0 else audio
-
     def transcribe_audio(self, audio: np.ndarray, beam: int) -> str:
         """Run ASR on audio sample."""
-        audio = self.normalise(audio)
+        audio = normalize(audio)
         if len(audio) / self.config.sample_rate < 0.3:
             return ""
         segments, _ = self.whisper.transcribe(audio, beam_size=beam, language="en")
@@ -208,7 +160,5 @@ class LiveTranscriber:
 # Main Entry Point
 # -------------------------
 if __name__ == "__main__":
-    config = TranscriberConfig(
-        device_name="Microphone", partial_interval=1.5, vad_threshold=0.5
-    )
+    config = TranscriberConfig(device_name="Microphone")
     LiveTranscriber(config).run()
