@@ -23,8 +23,8 @@ Built with:
 ## 👩‍💻 Running
 
 ```bash
-uv sync                # Install all dependencies
-uv run llm_prompter.py # Start the live transcriber + LLM
+uv sync            # Install all dependencies
+uv run prompter.py # Start the live transcriber + LLM
 ```
 
 ## Requirements
