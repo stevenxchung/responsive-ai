@@ -67,7 +67,7 @@ class LiveTranscriber:
             dtype="float32",
             callback=self.audio_callback,
         ):
-            logger.info("🎙️ Listening...")
+            logger.info("[Transcriber] Listening...")
             while True:
                 time.sleep(0.01)
 
@@ -152,7 +152,7 @@ class LiveTranscriber:
 
     @staticmethod
     def _handle_exit(signum, frame):
-        logger.info("\n🛑 Stopping transcriber...")
+        logger.info("[Transcriber] Stopping transcriber...")
         sys.exit(0)
 
 
