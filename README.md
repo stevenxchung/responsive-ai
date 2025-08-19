@@ -1,25 +1,82 @@
-# Responsive AI
+# 🎙️ Responsive AI
 
-Responsive AI app that leverages [OpenAI GPT](https://github.com/openai/gpt-3) to provide rich interactions with users.
+Responsive AI is a **local, real-time speech-to-LLM assistant** powered entirely by **open-source models**.  
+Speak to your computer → get instant answers back from an offline LLM — no accounts, no paid APIs. This is very much the lightweight open-source version of [Cluely](https://cluely.com/) before the hype.
+
+Built with:
+
+- **[`faster-whisper`](https://github.com/SYSTRAN/faster-whisper)** — GPU‑accelerated, low‑latency speech-to-text
+- **[Ollama](https://ollama.com/)** — Run local LLMs (Gemma 3 & others) on your machine
+
+## ✨ Features
+
+- **Real-time** microphone capture → live transcription (partials + final commit)
+- **In-context hotkey toggle**: decide when user input should be sent to the LLM
+- **Open-source models only** — no closed API keys, no rate limits
+- **Lightweight** — runs entirely on your local machine
+- Easy to extend (custom prompts, text-to-speech, conversation memory, etc.)
+
+## Prerequisites
+
+The following software needs to be installed on your local machine before running.
+
+### 📦 Package Managers
+
+We highly recommend the following:
+
+- [**uv**](https://docs.astral.sh/uv/getting-started/installation/) – Blazing fast Python environment manager (written in Rust)
+
+### 🤖 Local LLMs
+
+- [**Ollama**](https://ollama.com/download) – A streamlined, open-source platform for running and managing LLMs on your local machine. It simplifies downloading, setting up, and interacting with open-source models
+
+> ℹ️ Make sure Ollama is running in the background for LLM-based workflows.
+
+### 🎙️ Audio to Text (Transcription)
+
+To enable GPU-accelerated transcription with [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper):
+
+- NVIDIA GPU with sufficient VRAM for your chosen model
+- NVIDIA GPU driver (version depends on your CUDA setup)
+- [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) (typically version 11+)
+- [cuDNN](https://developer.nvidia.com/cudnn-downloads) (sometimes bundled with CUDA)
+
+To ensure PyTorch is installed with CUDA support:
+
+```bash
+uv pip install torch --index-url https://download.pytorch.org/whl/cu128 && uv sync
+```
+
+## How to run
+
+```bash
+uv sync                # Install dependencies from pyproject.toml
+uv run llm_prompter.py # Start the live transcriber + LLM
+```
 
 ## Problem
 
-This used to be a Next.js app that connected to OpenAI's GPT API and offered users access to ChatGPT without having to register. However, since OpenAI added an expiration on my API key, the only way to further access their API is by signing up for the paid version 🙄.
+This used to be a Next.js app that connected to OpenAI's GPT API and offered users access to ChatGPT without having to register. However, given their expiration on API keys, the only way to further access their API is by signing up for the paid version 🙄.
+
+### 💡 Why Local + Open Source?
+
+- You control your data (runs entirely offline if desired)
+- No rate limits / API key expirations
+- Full extensibility for custom workflows
+- True to the spirit of OpenAI's founding principles
 
 ## Architecture and Design
 
-There are still ways to provide users an equivalent or even greater utility given that there are so many [LLM (large language model)](https://en.wikipedia.org/wiki/Large_language_model) options available now. There are several variations and approaches I will experiment with around the core functionality of having a responsive AI agent.
-
-We want to create a responsive AI agent or app that:
-
-1. Takes real-time speech and converts to text
-   - We'll need to find a way to have the service listen to inputs from a microphone. Later we may expand to audio files, etc.
-   - Speech-to-text or vice versa is one of the most common [NLP (natural language processing)](https://en.wikipedia.org/wiki/Natural_language_processing) tasks, we can leverage Python and various NLP libraries to create a speech-to-text service
-2. Sends text to a service that communicates with an LLM (could be ChatGPT)
-   - This part is just researching which LLM is most suitable for use and building around that. It should be a free model or service and easy to use
-3. Takes response from LLM and converts back to speech in real-time
-   - Similar to Part 1 above but in reverse (text-to-speech), there should be some libraries we could use for that
-
-_Q: Paid versions of OpenAI's ChatGPT already has support for speech recognition so why reinvent the wheel?_
-
-The catch is you have to pay and it takes the fun out of building our own custom solution which could extend to more functionalities native to your desktop or mobile device. More importantly, we want to build out the solution using as many free and open source resources as possible so that it is as accessible to as many people as possible which was [OpenAI's original mission they have since steered away from](https://www.lunasec.io/docs/blog/openai-not-so-open/).
+```bash
+🎤 Microphone
+   ↓ (sounddevice)
+[Audio Queue]
+   ↓ (Silero VAD – Voice Activity Detection)
+Partial transcript every X seconds
+   ↓ (Whisper transcription)
+Final transcript when speech ends
+   ↓ if in_context = True
+Send to Ollama (Gemma3 or other LLM)
+   ↓
+LLM Response → log/console/next step
+```
