@@ -8,6 +8,8 @@ Built with:
 - **[`faster-whisper`](https://github.com/SYSTRAN/faster-whisper)** — GPU‑accelerated, low‑latency speech-to-text
 - **[Ollama](https://ollama.com/)** — Run local LLMs (Gemma 3 & others) on your machine
 
+![Demo](./_assets/demo.gif)
+
 ## ✨ Features
 
 - **Real-time** microphone capture → live transcription (partials + final commit)
