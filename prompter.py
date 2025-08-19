@@ -12,7 +12,7 @@ from transcriber import (
 )
 
 
-class LiveTranscriberWithLLM(LiveTranscriber):
+class AgentPrompter(LiveTranscriber):
     def __init__(self, config: TranscriberConfig, llm_model: str = "gemma3"):
         super().__init__(config)
         self.llm_model = llm_model
@@ -89,7 +89,7 @@ class LiveTranscriberWithLLM(LiveTranscriber):
         logger.info(f"Agent response time: {response_time:.2f} seconds")
 
 
-def start_hotkey_listener(transcriber: LiveTranscriberWithLLM):
+def start_hotkey_listener(transcriber: AgentPrompter):
     """Run keyboard listening in a background thread"""
 
     def toggle():
@@ -102,5 +102,5 @@ def start_hotkey_listener(transcriber: LiveTranscriberWithLLM):
 
 if __name__ == "__main__":
     config = TranscriberConfig(device_name="Microphone")
-    transcriber = LiveTranscriberWithLLM(config)
+    transcriber = AgentPrompter(config)
     transcriber.run()
