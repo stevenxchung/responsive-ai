@@ -1,67 +1,103 @@
 import sys
+import json
 import requests
 import keyboard
 
-from time import time
+from time import sleep, time
 from threading import Thread
-from utils.logger import logger
+from utils.logger import COLORS, RESET, logger
 from transcriber import (
     LiveTranscriber,
     TranscriberConfig,
 )
 
 
-def start_hotkey_listener(transcriber):
-    """Run keyboard listening in a background thread"""
-
-    def toggle():
-        transcriber.in_context = not transcriber.in_context
-        state = "ENABLED" if transcriber.in_context else "DISABLED"
-        logger.info(f"[Hotkey] In-context mode {state}")
-
-    Thread(target=lambda: keyboard.add_hotkey("ctrl+alt", toggle), daemon=True).start()
-
-
 class LiveTranscriberWithLLM(LiveTranscriber):
     def __init__(self, config: TranscriberConfig, llm_model: str = "gemma3"):
         super().__init__(config)
         self.llm_model = llm_model
-        self.in_context = True
+        self.llm_toggle = True
         start_hotkey_listener(self)
 
-    def query_ollama(self, prompt: str) -> str:
+    def get_agent_stream(self, prompt: str):
         prompt = f"PLEASE ANSWER AS BRIEFLY AND CONCISELY AS POSSIBLE: {prompt}"
         try:
-            r = requests.post(
+            with requests.post(
                 "http://localhost:11434/api/generate",
-                json={"model": self.llm_model, "prompt": prompt, "stream": False},
+                json={"model": self.llm_model, "prompt": prompt, "stream": True},
+                stream=True,
                 timeout=60,
-            )
-            r.raise_for_status()
-            data = r.json()
-            return data.get("response", "").strip()
+            ) as r:
+                r.raise_for_status()
+                for raw_line in r.iter_lines():
+                    if not raw_line:
+                        continue
+                    if isinstance(raw_line, bytes):
+                        raw_line = raw_line.decode("utf-8")
+
+                    try:
+                        data = json.loads(raw_line)
+                    except json.JSONDecodeError:
+                        continue
+
+                    if "response" in data:
+                        yield data["response"]  # yield chunk
+
+                    if data.get("done", False):
+                        break
         except Exception as e:
             logger.error(f"Error contacting Ollama: {e}")
-            return "[Error contacting Ollama]"
+            yield "[Error contacting Ollama]"
 
     def commit_final(self, text: str) -> None:
-        # First: Log the final transcript
         final_text = text.strip()
-        # End the partial line cleanly
+        # End the [Partial] line cleanly
         sys.stdout.write("\r\033[K")
         sys.stdout.flush()
-        logger.info(f"[User] {final_text}")
+        sys.stdout.write(f"{COLORS['USER']}[User] {final_text}\n{RESET}")
+        sys.stdout.flush()
 
-        if not self.in_context:
-            logger.info("[LLM] Skipping Ollama request (not in context mode)")
+        if not self.llm_toggle:
+            logger.info("[Agent] Skipping Ollama request (not in context mode)")
             return
 
-        # Then: Query Ollama and log response
-        logger.info("[LLM] Querying Ollama...")
-        start = time()
-        response = self.query_ollama(final_text)
-        logger.info(f"[LLM Response] {response}")
-        logger.info(f"Response time: {time() - start} seconds")
+        sys.stdout.write(f"{COLORS['AGENT']}[Agent] Thinking...{RESET}")
+        sys.stdout.flush()
+
+        start_time = time()
+        response_time = 0
+        first_chunk = True
+
+        for chunk in self.get_agent_stream(final_text):
+            if first_chunk:
+                # Clear the thinking line and print agent prefix
+                sys.stdout.write("\r\033[K")
+                sys.stdout.write(f"{COLORS['AGENT']}[Agent] ")
+                sys.stdout.flush()
+                response_time = time() - start_time
+                first_chunk = False
+
+            # Stream to terminal
+            sys.stdout.write(chunk)
+            sys.stdout.flush()
+            # Typing delay
+            sleep(0.05)
+
+        sys.stdout.write(f"{RESET}\n")
+        sys.stdout.flush()
+
+        logger.info(f"Agent response time: {response_time:.2f} seconds")
+
+
+def start_hotkey_listener(transcriber: LiveTranscriberWithLLM):
+    """Run keyboard listening in a background thread"""
+
+    def toggle():
+        transcriber.llm_toggle = not transcriber.llm_toggle
+        state = "ENABLED" if transcriber.llm_toggle else "DISABLED"
+        logger.info(f"[Hotkey] In-context mode {state}")
+
+    Thread(target=lambda: keyboard.add_hotkey("ctrl+alt", toggle), daemon=True).start()
 
 
 if __name__ == "__main__":
