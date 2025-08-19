@@ -16,7 +16,14 @@ Built with:
 - **Lightweight** — runs entirely on your local machine
 - Easy to extend (custom prompts, text-to-speech, conversation memory, etc.)
 
-## Prerequisites
+## 👩‍💻 Running
+
+```bash
+uv sync                # Install all dependencies
+uv run llm_prompter.py # Start the live transcriber + LLM
+```
+
+## Requirements
 
 The following software needs to be installed on your local machine before running.
 
@@ -45,13 +52,6 @@ To ensure PyTorch is installed with CUDA support:
 
 ```bash
 uv pip install torch --index-url https://download.pytorch.org/whl/cu128 && uv sync
-```
-
-## How to run
-
-```bash
-uv sync                # Install dependencies from pyproject.toml
-uv run llm_prompter.py # Start the live transcriber + LLM
 ```
 
 ## Problem
