@@ -1,4 +1,9 @@
 import logging
+import warnings
+
+warnings.filterwarnings(
+    "ignore", category=UserWarning, message=r".*pkg_resources is deprecated as an API.*"
+)
 
 logging.basicConfig(
     level=logging.INFO,
