@@ -1,7 +1,6 @@
 # 🎙️ Responsive AI
 
-Responsive AI is a **local, real-time speech-to-LLM assistant** powered entirely by **open-source models**.  
-Speak to your computer → get instant answers back from an offline LLM — no accounts, no paid APIs. This is very much the lightweight open-source version of [Cluely](https://cluely.com/) before the hype.
+Responsive AI is very much the lightweight open-source version of [Cluely](https://cluely.com/) before the hype. Run as a **local, real-time speech-to-LLM assistant** powered entirely by **open-source models**. Speak to your computer → get instant answers back from an offline LLM — no accounts, no paid APIs.
 
 Built with:
 
