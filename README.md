@@ -2,12 +2,15 @@
 
 Responsive AI is very much the lightweight open-source version of [Cluely](https://cluely.com/) before the hype. Run as a **local, real-time speech-to-LLM assistant** powered entirely by **open-source models**. Speak to your computer → get instant answers back from an offline LLM — no accounts, no paid APIs.
 
+[![Python](https://img.shields.io/badge/python-3.12%2B-orange.svg)](https://www.python.org/)
+[![Runs Locally](https://img.shields.io/badge/runs-locally-green)]()
+
+![Demo](./_assets/demo.gif)
+
 Built with:
 
 - **[`faster-whisper`](https://github.com/SYSTRAN/faster-whisper)** — GPU‑accelerated, low‑latency speech-to-text
 - **[Ollama](https://ollama.com/)** — Run local LLMs (Gemma 3 & others) on your machine
-
-![Demo](./_assets/demo.gif)
 
 ## ✨ Features
 
